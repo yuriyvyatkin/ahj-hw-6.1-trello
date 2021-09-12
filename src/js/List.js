@@ -113,12 +113,13 @@ export default class List {
       composer,
     ));
 
+    composer.addEventListener('click', () => this.constructor.focusOnCardComposer(composer));
+
     const addBtn = this.parentEl.querySelector(this.constructor.newCardButtonSelector);
     const cardsList = this.parentEl.querySelector(this.constructor.cardsListSelector);
     addBtn.addEventListener('click', () => this.constructor.addNewCard(
       cardsList,
       composer,
-      textarea,
       this.constructor.cardMarkup(textarea.value),
     ));
 
@@ -154,10 +155,17 @@ export default class List {
     composer.classList.add('hide');
   }
 
-  static addNewCard(cardsList, composer, textarea, markup) {
+  static focusOnCardComposer(composer) {
+    const textarea = composer.querySelector('textarea');
+    textarea.focus();
+  }
+
+  static addNewCard(cardsList, composer, markup) {
+    const textarea = composer.querySelector('textarea');
     if (markup !== '') {
       composer.insertAdjacentHTML('beforebegin', markup);
       localStorage.setItem(cardsList.dataset.key, cardsList.innerText);
+      textarea.value = '';
     } else {
       textarea.focus();
     }

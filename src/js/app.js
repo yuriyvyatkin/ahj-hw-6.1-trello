@@ -17,3 +17,15 @@ dragAndDrop.handleMousedown();
 dragAndDrop.handleMousemove();
 dragAndDrop.handleMouseleave();
 dragAndDrop.handleMouseup();
+
+// при нажатии Enter добавим карточку, закроем меню и очистим поле ввода
+document.addEventListener('keyup', (event) => {
+  if (event.key === 'Enter') {
+    const cardsList = document.activeElement.closest('.list-cards');
+    const addBtn = cardsList.querySelector('.new-card-button');
+    const closeBtn = addBtn.nextElementSibling;
+    addBtn.click();
+    closeBtn.click();
+    document.activeElement.value = '';
+  }
+});

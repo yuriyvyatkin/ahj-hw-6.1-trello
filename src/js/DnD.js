@@ -59,9 +59,13 @@ export default class DnD {
     this.board.addEventListener('mousedown', (event) => {
       event.preventDefault();
 
-      // если карточки под курсором нет или нажата кнопка удаления карточки, выходим
+      // если карточки под курсором нет, выходим
       const card = event.target.closest('.list-card');
-      if (!card || event.target.classList.contains('list-card-remover')) {
+      if (
+        !card
+        || event.target.classList.contains('list-card-remover')
+        || event.target.className.startsWith('card-composer')
+      ) {
         return;
       }
 
@@ -186,11 +190,17 @@ export default class DnD {
       } else if (closest.className.startsWith('list-card')) {
         // если карточка была перемещена в новую позицию, то вставим в новую
         this.insertElement(event, closest, this.draggedEl);
-        // обновим LocalStorage у старого и нового списка
-        let cardsList = this.origin.sibling.closest('.list-cards');
-        localStorage.setItem(cardsList.dataset.key, cardsList.innerText);
-        cardsList = closest.closest('.list-cards');
-        localStorage.setItem(cardsList.dataset.key, cardsList.innerText);
+        // обновим LocalStorage у старого списка
+        const originalCardsList = this.origin.sibling.closest('.list-cards');
+        localStorage.setItem(
+          originalCardsList.dataset.key,
+          originalCardsList.innerText,
+        );
+        const newCardsList = closest.closest('.list-cards');
+        if (originalCardsList !== newCardsList) {
+          // если карточка не в старом списке, то обновим LocalStorage нового
+          localStorage.setItem(newCardsList.dataset.key, newCardsList.innerText);
+        }
       } else {
         // иначе возвращаем карточку туда, откуда она была взята
         this.getCardBack();
